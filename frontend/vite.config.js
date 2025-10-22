@@ -17,5 +17,9 @@ export default defineConfig({
       }
     }
   },
-  assetsInclude: ['**/*.wasm']
+  assetsInclude: ['**/*.wasm'],
+  define: {
+    // This ensures the base path is available at runtime
+    'import.meta.env.BASE_URL': JSON.stringify('/hashlab/')
+  }
 })
