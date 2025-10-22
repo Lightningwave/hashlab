@@ -49,21 +49,6 @@ export const Router = ({ routes, notFound: NotFound = DefaultNotFound }) => {
     return () => window.removeEventListener('popstate', onPop);
   }, []);
 
-  // Debug current route in production once to diagnose blank page
-  useEffect(() => {
-    if (typeof window !== 'undefined' && !window.__hashlab_logged) {
-      window.__hashlab_logged = true;
-      try {
-        // eslint-disable-next-line no-console
-        console.log('[Router] basePath=', basePath, 'currentPath=', currentPath, 'routeKeys=', Array.from(routeTable.keys()));
-        // eslint-disable-next-line no-console
-        console.log('[Router] window.location.pathname=', window.location.pathname);
-        // eslint-disable-next-line no-console
-        console.log('[Router] Element found=', !!routeTable.get(currentPath));
-      } catch {}
-    }
-  }, [currentPath, routeTable]);
-
   const Element = routeTable.get(currentPath) || NotFound;
   return <Element />;
 };

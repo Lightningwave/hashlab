@@ -48,35 +48,10 @@ jobs:
         cd rust-wasm
         wasm-pack build --release --target web --out-dir ../pkg --out-name rust_wasm
         
-    - name: Copy WASM files as static assets
+    - name: Copy WASM files to public directory
       run: |
-        echo "Current directory structure:"
-        ls -la
-        echo "PKG directory contents:"
-        ls -la pkg/
-        
-        # Copy WASM files to public directory so they're treated as static assets
-        echo "Creating public/pkg directory:"
         mkdir -p frontend/public/pkg
         cp -r pkg/* frontend/public/pkg/
-        
-        # Also copy to dist for backup
-        echo "Creating dist/pkg directory:"
-        mkdir -p frontend/dist/pkg
-        cp -r pkg/* frontend/dist/pkg/
-        
-        echo "Verifying copied files in public/pkg:"
-        ls -la frontend/public/pkg/
-        echo "Verifying copied files in dist/pkg:"
-        ls -la frontend/dist/pkg/
-        
-        echo "Final dist directory structure:"
-        find frontend/dist -name "*.wasm" -o -name "rust_wasm.js" | head -10
-        
-        # Verify the files are accessible
-        echo "Testing file accessibility:"
-        ls -la frontend/dist/pkg/rust_wasm.js || echo "rust_wasm.js not found in dist/pkg"
-        ls -la frontend/public/pkg/rust_wasm.js || echo "rust_wasm.js not found in public/pkg"
         
     - name: Install frontend dependencies
       run: |
@@ -90,28 +65,13 @@ jobs:
         
     - name: Copy WASM files to dist after build
       run: |
-        echo "Ensuring WASM files are in dist/pkg after build:"
         mkdir -p frontend/dist/pkg
         cp -r pkg/* frontend/dist/pkg/
-        echo "Verifying WASM files in dist/pkg:"
-        ls -la frontend/dist/pkg/
-        echo "Checking if rust_wasm.js exists:"
-        test -f frontend/dist/pkg/rust_wasm.js && echo "✓ rust_wasm.js found" || echo "✗ rust_wasm.js NOT found"
-        test -f frontend/dist/pkg/rust_wasm_bg.wasm && echo "✓ rust_wasm_bg.wasm found" || echo "✗ rust_wasm_bg.wasm NOT found"
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
       if: github.ref == 'refs/heads/main'
       
-    - name: Verify final deployment structure
-      run: |
-        echo "Final deployment directory structure:"
-        find frontend/dist -type f -name "*.js" -o -name "*.wasm" | head -20
-        echo "Checking if pkg directory exists:"
-        ls -la frontend/dist/pkg/ || echo "pkg directory not found"
-        echo "Complete dist directory tree:"
-        ls -R frontend/dist/
-        
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       if: github.ref == 'refs/heads/main'
