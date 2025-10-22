@@ -8,5 +8,14 @@ export default defineConfig({
       allow: ['..']
     }
   },
-  base: '/hashlab/'
+  base: '/hashlab/',
+  build: {
+    rollupOptions: {
+      external: (id) => {
+        // Don't bundle WASM files, they should be loaded at runtime
+        return id.includes('pkg/rust_wasm')
+      }
+    }
+  },
+  assetsInclude: ['**/*.wasm']
 })

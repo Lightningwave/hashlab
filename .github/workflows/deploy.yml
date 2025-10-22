@@ -53,6 +53,11 @@ jobs:
         cd frontend
         npm install
         
+    - name: Copy WASM files
+      run: |
+        mkdir -p frontend/dist/pkg
+        cp -r pkg/* frontend/dist/pkg/
+        
     - name: Build frontend
       run: |
         cd frontend
