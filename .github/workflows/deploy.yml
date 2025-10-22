@@ -48,16 +48,6 @@ jobs:
         cd rust-wasm
         wasm-pack build --release --target web --out-dir ../pkg --out-name rust_wasm
         
-    - name: Install frontend dependencies
-      run: |
-        cd frontend
-        npm install
-        
-    - name: Build frontend
-      run: |
-        cd frontend
-        npm run build
-        
     - name: Copy WASM files as static assets
       run: |
         echo "Current directory structure:"
@@ -82,6 +72,21 @@ jobs:
         
         echo "Final dist directory structure:"
         find frontend/dist -name "*.wasm" -o -name "rust_wasm.js" | head -10
+        
+        # Verify the files are accessible
+        echo "Testing file accessibility:"
+        ls -la frontend/dist/pkg/rust_wasm.js || echo "rust_wasm.js not found in dist/pkg"
+        ls -la frontend/public/pkg/rust_wasm.js || echo "rust_wasm.js not found in public/pkg"
+        
+    - name: Install frontend dependencies
+      run: |
+        cd frontend
+        npm install
+        
+    - name: Build frontend
+      run: |
+        cd frontend
+        npm run build
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
