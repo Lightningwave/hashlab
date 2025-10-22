@@ -60,9 +60,20 @@ jobs:
         
     - name: Copy WASM files
       run: |
+        echo "Current directory structure:"
+        ls -la
+        echo "PKG directory contents:"
+        ls -la pkg/
+        echo "Creating dist/pkg directory:"
         mkdir -p frontend/dist/pkg
+        echo "Copying WASM files:"
         cp -r pkg/* frontend/dist/pkg/
+        echo "Verifying copied files:"
         ls -la frontend/dist/pkg/
+        echo "Final dist directory structure:"
+        find frontend/dist -name "*.wasm" -o -name "*.js" | head -10
+        echo "Testing file accessibility:"
+        ls -la frontend/dist/pkg/rust_wasm.js
         
     - name: Setup Pages
       uses: actions/configure-pages@v4

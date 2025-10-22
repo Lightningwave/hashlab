@@ -17,6 +17,7 @@ export default defineConfig({
       }
     }
   },
+  copyPublicDir: false,
   assetsInclude: ['**/*.wasm'],
   define: {
     // This ensures the base path is available at runtime
