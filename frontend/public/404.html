@@ -5,7 +5,15 @@
     <title>HashLab - Cryptographic Tools</title>
     <script>
         // Redirect to the main app for client-side routing
-        window.location.replace('/hashlab/');
+        // Preserve the intended path for the router to handle
+        const currentPath = window.location.pathname;
+        if (currentPath.startsWith('/hashlab/')) {
+            // Already on the right base path, just redirect to main app
+            window.location.replace('/hashlab/');
+        } else {
+            // Not on the right base path, redirect to main app
+            window.location.replace('/hashlab/');
+        }
     </script>
 </head>
 <body>

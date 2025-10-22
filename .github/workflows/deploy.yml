@@ -74,11 +74,23 @@ jobs:
         find frontend/dist -name "*.wasm" -o -name "*.js" | head -10
         echo "Testing file accessibility:"
         ls -la frontend/dist/pkg/rust_wasm.js
+        echo "Creating root-level pkg directory for GitHub Pages:"
+        mkdir -p frontend/dist/pkg
+        cp -r pkg/* frontend/dist/pkg/
+        echo "Final verification - root pkg files:"
+        ls -la frontend/dist/pkg/
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
       if: github.ref == 'refs/heads/main'
       
+    - name: Verify final deployment structure
+      run: |
+        echo "Final deployment directory structure:"
+        find frontend/dist -type f -name "*.js" -o -name "*.wasm" | head -20
+        echo "Checking if pkg directory exists:"
+        ls -la frontend/dist/pkg/ || echo "pkg directory not found"
+        
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3
       if: github.ref == 'refs/heads/main'
