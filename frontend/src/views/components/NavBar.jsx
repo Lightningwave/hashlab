@@ -48,7 +48,7 @@ export const NavBar = () => {
         onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
       >
         <img 
-          src="/images/hashlab-nobg.png" 
+          src="/hashlab/images/hashlab-nobg.png" 
           alt="HashLab Logo" 
           style={{ 
             height: '48px', 

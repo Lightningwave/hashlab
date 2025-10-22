@@ -1,6 +1,5 @@
 /**
  * EncodingService - Model layer for encoding/decoding operations
- * Future: Base64, URL encoding, Hex, etc.
  */
 class EncodingService {
   constructor() {
@@ -12,7 +11,7 @@ class EncodingService {
     if (this.wasm) return;
     if (!this.initPromise) {
       this.initPromise = (async () => {
-        const wasmModule = await import('../../../pkg/rust_wasm');
+        const wasmModule = await import('/hashlab/pkg/rust_wasm');
         await wasmModule.default();
         this.wasm = wasmModule;
       })();

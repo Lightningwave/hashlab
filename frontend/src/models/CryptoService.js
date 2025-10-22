@@ -1,6 +1,5 @@
 /**
  * CryptoService - Model layer for cryptographic operations
- * Wraps WASM functions and handles initialization
  */
 class CryptoService {
   constructor() {
@@ -9,7 +8,7 @@ class CryptoService {
   }
 
   /**
-   * Initialize WASM module (lazy loading)
+   * Initialize WASM module 
    */
   async init() {
     if (this.wasm) return;
@@ -17,7 +16,7 @@ class CryptoService {
     if (!this.initPromise) {
       this.initPromise = (async () => {
         try {
-          const wasmModule = await import('../../../pkg/rust_wasm');
+          const wasmModule = await import('/hashlab/pkg/rust_wasm');
           await wasmModule.default();
           this.wasm = wasmModule;
           console.log('✓ WASM module loaded successfully');
@@ -32,9 +31,8 @@ class CryptoService {
   }
 
   /**
-   * Hash input using MD5
-   * @param {string} input - Text to hash
-   * @returns {Promise<string>} Hex-encoded hash
+   * @param {string} input -
+   * @returns {Promise<string>} 
    */
   async hashMD5(input) {
     await this.init();
@@ -155,8 +153,7 @@ class CryptoService {
     }
   }
 
-  // Future methods:
-  // async encryptAES(plaintext, key) { ... }
+ 
 }
 
 export default new CryptoService();

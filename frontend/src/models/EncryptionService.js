@@ -1,4 +1,3 @@
-// EncryptionService using Rust/WASM implementations (AES/DES/3DES CBC)
 
 const textEncoder = new TextEncoder();
 const textDecoder = new TextDecoder();
@@ -30,7 +29,7 @@ export class EncryptionService {
     if (this.wasm) return;
     if (!this.initPromise) {
       this.initPromise = (async () => {
-        const wasmModule = await import('../../../pkg/rust_wasm');
+        const wasmModule = await import('/hashlab/pkg/rust_wasm');
         await wasmModule.default();
         this.wasm = wasmModule;
       })();
@@ -84,7 +83,7 @@ export class EncryptionService {
     return this.wasm.des_cbc_decrypt(cipher, key, iv);
   }
 
-  // Triple DES-CBC (3-key by default)
+  // Triple DES-CBC 
   async tdesEncrypt(plaintext, key, threeKey = true) {
     await this.init();
     const iv = crypto.getRandomValues(new Uint8Array(8));
@@ -98,10 +97,8 @@ export class EncryptionService {
     return this.wasm.tdes_cbc_decrypt(cipher, key, iv, threeKey);
   }
 
-  // Auto-IV versions - these handle IV automatically
   async aes128EncryptAutoIv(plaintext, passphrase, salt) {
     await this.init();
-    // Rust handles everything: salt + IV + ciphertext
     const combined = new Uint8Array(this.wasm.aes128_cbc_encrypt_with_passphrase(plaintext, passphrase, salt));
     return bytesToBase64(combined);
   }
@@ -110,7 +107,6 @@ export class EncryptionService {
     await this.init();
     const key = new Uint8Array(this.wasm.derive_aes192_key(passphrase, salt));
     const ivAndCipher = new Uint8Array(this.wasm.aes192_cbc_encrypt_auto_iv(plaintext, new TextDecoder().decode(key)));
-    // Prepend salt to the IV+ciphertext: [salt(16) | iv(16) | ciphertext]
     const combined = new Uint8Array(salt.length + ivAndCipher.length);
     combined.set(salt, 0);
     combined.set(ivAndCipher, salt.length);
@@ -119,14 +115,12 @@ export class EncryptionService {
   async aes128DecryptAutoIv(cipherBase64, passphrase) {
     await this.init();
     const combined = base64ToBytes(cipherBase64);
-    // Rust extracts salt and IV automatically
     return this.wasm.aes128_cbc_decrypt_with_passphrase(combined, passphrase);
   }
 
   async aes192DecryptAutoIv(cipherBase64, passphrase) {
     await this.init();
     const combined = base64ToBytes(cipherBase64);
-    // Extract salt from beginning: [salt(16) | iv(16) | ciphertext]
     const salt = combined.slice(0, 16);
     const ivAndCipher = combined.slice(16);
     const key = new Uint8Array(this.wasm.derive_aes192_key(passphrase, salt));
@@ -167,7 +161,7 @@ export class EncryptionService {
     return this.wasm.tdes_cbc_decrypt_auto_iv(combined, key, threeKey);
   }
 
-  // ECB methods - no IV needed
+  // ECB methods 
   async aes128EcbEncrypt(plaintext, passphrase) {
     await this.init();
     const salt = crypto.getRandomValues(new Uint8Array(16));
@@ -216,12 +210,11 @@ export class EncryptionService {
     return this.wasm.aes256_ecb_decrypt(cipher, new TextDecoder().decode(key));
   }
 
-  // CTR methods - auto-nonce handling
+  // CTR methods 
   async aes128CtrEncrypt(plaintext, passphrase, salt) {
     await this.init();
     const key = new Uint8Array(this.wasm.derive_aes128_key(passphrase, salt));
     const nonceAndCipher = new Uint8Array(this.wasm.aes128_ctr_encrypt_auto_nonce(plaintext, new TextDecoder().decode(key)));
-    // Prepend salt to the nonce+ciphertext: [salt(16) | nonce(16) | ciphertext]
     const combined = new Uint8Array(salt.length + nonceAndCipher.length);
     combined.set(salt, 0);
     combined.set(nonceAndCipher, salt.length);
@@ -231,7 +224,6 @@ export class EncryptionService {
   async aes128CtrDecrypt(cipherBase64, passphrase) {
     await this.init();
     const combined = base64ToBytes(cipherBase64);
-    // Extract salt from beginning: [salt(16) | nonce(16) | ciphertext]
     const salt = combined.slice(0, 16);
     const nonceAndCipher = combined.slice(16);
     const key = new Uint8Array(this.wasm.derive_aes128_key(passphrase, salt));
@@ -242,7 +234,6 @@ export class EncryptionService {
     await this.init();
     const key = new Uint8Array(this.wasm.derive_aes192_key(passphrase, salt));
     const nonceAndCipher = new Uint8Array(this.wasm.aes192_ctr_encrypt_auto_nonce(plaintext, new TextDecoder().decode(key)));
-    // Prepend salt to the nonce+ciphertext: [salt(16) | nonce(16) | ciphertext]
     const combined = new Uint8Array(salt.length + nonceAndCipher.length);
     combined.set(salt, 0);
     combined.set(nonceAndCipher, salt.length);
@@ -252,7 +243,6 @@ export class EncryptionService {
   async aes192CtrDecrypt(cipherBase64, passphrase) {
     await this.init();
     const combined = base64ToBytes(cipherBase64);
-    // Extract salt from beginning: [salt(16) | nonce(16) | ciphertext]
     const salt = combined.slice(0, 16);
     const nonceAndCipher = combined.slice(16);
     const key = new Uint8Array(this.wasm.derive_aes192_key(passphrase, salt));
@@ -263,7 +253,6 @@ export class EncryptionService {
     await this.init();
     const key = new Uint8Array(this.wasm.derive_aes256_key(passphrase, salt));
     const nonceAndCipher = new Uint8Array(this.wasm.aes256_ctr_encrypt_auto_nonce(plaintext, new TextDecoder().decode(key)));
-    // Prepend salt to the nonce+ciphertext: [salt(16) | nonce(16) | ciphertext]
     const combined = new Uint8Array(salt.length + nonceAndCipher.length);
     combined.set(salt, 0);
     combined.set(nonceAndCipher, salt.length);
@@ -273,14 +262,13 @@ export class EncryptionService {
   async aes256CtrDecrypt(cipherBase64, passphrase) {
     await this.init();
     const combined = base64ToBytes(cipherBase64);
-    // Extract salt from beginning: [salt(16) | nonce(16) | ciphertext]
     const salt = combined.slice(0, 16);
     const nonceAndCipher = combined.slice(16);
     const key = new Uint8Array(this.wasm.derive_aes256_key(passphrase, salt));
     return this.wasm.aes256_ctr_decrypt_auto_nonce(nonceAndCipher, new TextDecoder().decode(key));
   }
 
-  // DES/3DES ECB methods - no IV needed
+  // DES/3DES ECB methods 
   async desEcbEncrypt(plaintext, key) {
     await this.init();
     const ciphertext = new Uint8Array(this.wasm.des_ecb_encrypt(plaintext, key));
@@ -305,7 +293,7 @@ export class EncryptionService {
     return this.wasm.tdes_ecb_decrypt(cipher, key, threeKey);
   }
 
-  // DES/3DES CTR methods - auto-nonce handling
+  // DES/3DES CTR methods 
   async desCtrEncrypt(plaintext, key) {
     await this.init();
     const combined = new Uint8Array(this.wasm.des_ctr_encrypt_auto_nonce(plaintext, key));
@@ -330,7 +318,7 @@ export class EncryptionService {
     return this.wasm.tdes_ctr_decrypt_auto_nonce(combined, key, threeKey);
   }
 
-  // RC4 - Legacy stream cipher (for educational purposes only)
+  // RC4 - Legacy stream cipher 
   async rc4Encrypt(plaintext, key) {
     await this.init();
     const ciphertext = new Uint8Array(this.wasm.rc4_encrypt(plaintext, key));
