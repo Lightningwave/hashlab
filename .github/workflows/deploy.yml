@@ -58,26 +58,27 @@ jobs:
         cd frontend
         npm run build
         
-    - name: Copy WASM files to multiple locations
+    - name: Copy WASM files as static assets
       run: |
         echo "Current directory structure:"
         ls -la
         echo "PKG directory contents:"
         ls -la pkg/
         
-        # Copy to dist/pkg (for relative imports)
+        # Copy WASM files to public directory so they're treated as static assets
+        echo "Creating public/pkg directory:"
+        mkdir -p frontend/public/pkg
+        cp -r pkg/* frontend/public/pkg/
+        
+        # Also copy to dist for backup
         echo "Creating dist/pkg directory:"
         mkdir -p frontend/dist/pkg
         cp -r pkg/* frontend/dist/pkg/
         
-        # Copy to dist root (for absolute imports)
-        echo "Copying WASM files to dist root:"
-        cp -r pkg/* frontend/dist/
-        
+        echo "Verifying copied files in public/pkg:"
+        ls -la frontend/public/pkg/
         echo "Verifying copied files in dist/pkg:"
         ls -la frontend/dist/pkg/
-        echo "Verifying copied files in dist root:"
-        ls -la frontend/dist/ | grep -E "(rust_wasm|\.wasm)"
         
         echo "Final dist directory structure:"
         find frontend/dist -name "*.wasm" -o -name "rust_wasm.js" | head -10
