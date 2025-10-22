@@ -56,6 +56,10 @@ export const Router = ({ routes, notFound: NotFound = DefaultNotFound }) => {
       try {
         // eslint-disable-next-line no-console
         console.log('[Router] basePath=', basePath, 'currentPath=', currentPath, 'routeKeys=', Array.from(routeTable.keys()));
+        // eslint-disable-next-line no-console
+        console.log('[Router] window.location.pathname=', window.location.pathname);
+        // eslint-disable-next-line no-console
+        console.log('[Router] Element found=', !!routeTable.get(currentPath));
       } catch {}
     }
   }, [currentPath, routeTable]);
