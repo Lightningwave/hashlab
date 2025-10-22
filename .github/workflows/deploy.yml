@@ -88,6 +88,17 @@ jobs:
         cd frontend
         npm run build
         
+    - name: Copy WASM files to dist after build
+      run: |
+        echo "Ensuring WASM files are in dist/pkg after build:"
+        mkdir -p frontend/dist/pkg
+        cp -r pkg/* frontend/dist/pkg/
+        echo "Verifying WASM files in dist/pkg:"
+        ls -la frontend/dist/pkg/
+        echo "Checking if rust_wasm.js exists:"
+        test -f frontend/dist/pkg/rust_wasm.js && echo "✓ rust_wasm.js found" || echo "✗ rust_wasm.js NOT found"
+        test -f frontend/dist/pkg/rust_wasm_bg.wasm && echo "✓ rust_wasm_bg.wasm found" || echo "✗ rust_wasm_bg.wasm NOT found"
+        
     - name: Setup Pages
       uses: actions/configure-pages@v4
       if: github.ref == 'refs/heads/main'
@@ -98,6 +109,8 @@ jobs:
         find frontend/dist -type f -name "*.js" -o -name "*.wasm" | head -20
         echo "Checking if pkg directory exists:"
         ls -la frontend/dist/pkg/ || echo "pkg directory not found"
+        echo "Complete dist directory tree:"
+        ls -R frontend/dist/
         
     - name: Upload artifact
       uses: actions/upload-pages-artifact@v3

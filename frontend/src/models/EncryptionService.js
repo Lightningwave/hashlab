@@ -29,7 +29,7 @@ export class EncryptionService {
     if (this.wasm) return;
     if (!this.initPromise) {
       this.initPromise = (async () => {
-        const wasmModule = await import('/hashlab/pkg/rust_wasm');
+        const wasmModule = await import('/hashlab/pkg/rust_wasm.js');
         await wasmModule.default();
         this.wasm = wasmModule;
       })();
