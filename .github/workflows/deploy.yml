@@ -53,15 +53,16 @@ jobs:
         cd frontend
         npm install
         
-    - name: Copy WASM files
-      run: |
-        mkdir -p frontend/dist/pkg
-        cp -r pkg/* frontend/dist/pkg/
-        
     - name: Build frontend
       run: |
         cd frontend
         npm run build
+        
+    - name: Copy WASM files
+      run: |
+        mkdir -p frontend/dist/pkg
+        cp -r pkg/* frontend/dist/pkg/
+        ls -la frontend/dist/pkg/
         
     - name: Setup Pages
       uses: actions/configure-pages@v4
