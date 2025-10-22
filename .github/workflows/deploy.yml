@@ -58,27 +58,29 @@ jobs:
         cd frontend
         npm run build
         
-    - name: Copy WASM files
+    - name: Copy WASM files to multiple locations
       run: |
         echo "Current directory structure:"
         ls -la
         echo "PKG directory contents:"
         ls -la pkg/
+        
+        # Copy to dist/pkg (for relative imports)
         echo "Creating dist/pkg directory:"
         mkdir -p frontend/dist/pkg
-        echo "Copying WASM files:"
         cp -r pkg/* frontend/dist/pkg/
-        echo "Verifying copied files:"
+        
+        # Copy to dist root (for absolute imports)
+        echo "Copying WASM files to dist root:"
+        cp -r pkg/* frontend/dist/
+        
+        echo "Verifying copied files in dist/pkg:"
         ls -la frontend/dist/pkg/
+        echo "Verifying copied files in dist root:"
+        ls -la frontend/dist/ | grep -E "(rust_wasm|\.wasm)"
+        
         echo "Final dist directory structure:"
-        find frontend/dist -name "*.wasm" -o -name "*.js" | head -10
-        echo "Testing file accessibility:"
-        ls -la frontend/dist/pkg/rust_wasm.js
-        echo "Creating root-level pkg directory for GitHub Pages:"
-        mkdir -p frontend/dist/pkg
-        cp -r pkg/* frontend/dist/pkg/
-        echo "Final verification - root pkg files:"
-        ls -la frontend/dist/pkg/
+        find frontend/dist -name "*.wasm" -o -name "rust_wasm.js" | head -10
         
     - name: Setup Pages
       uses: actions/configure-pages@v4

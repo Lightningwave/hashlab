@@ -16,7 +16,7 @@ class CryptoService {
     if (!this.initPromise) {
       this.initPromise = (async () => {
         try {
-          const wasmModule = await import('/pkg/rust_wasm');
+          const wasmModule = await import('/hashlab/pkg/rust_wasm');
           await wasmModule.default();
           this.wasm = wasmModule;
           console.log('✓ WASM module loaded successfully');
