@@ -41,7 +41,17 @@ export const Router = ({ routes, notFound: NotFound = DefaultNotFound }) => {
     return map;
   }, [routes]);
 
-  const [currentPath, setCurrentPath] = useState(() => normalizePath(window.location.pathname));
+  const [currentPath, setCurrentPath] = useState(() => {
+    // Check if we were redirected from a 404 page
+    const redirectPath = sessionStorage.getItem('redirectPath');
+    if (redirectPath) {
+      sessionStorage.removeItem('redirectPath');
+      // Update the browser URL without reloading
+      window.history.replaceState({}, '', redirectPath);
+      return normalizePath(redirectPath);
+    }
+    return normalizePath(window.location.pathname);
+  });
 
   useEffect(() => {
     const onPop = () => setCurrentPath(normalizePath(window.location.pathname));
