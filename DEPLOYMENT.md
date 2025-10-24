@@ -122,7 +122,7 @@ To update your deployed site:
 2. Commit and push to GitHub:
    ```bash
    git add .
-   git commit -m "Your changes"
+   git commit -m 
    git push origin main
    ```
 3. GitHub Actions will automatically rebuild and deploy
@@ -135,5 +135,4 @@ npm run deploy
 
 ---
 
-**Note:** All cryptographic operations run client-side. No data is sent to any server.
 

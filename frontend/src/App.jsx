@@ -2,6 +2,7 @@ import React from 'react';
 import { HashingPage } from './views/pages/HashingPage';
 import { EncryptionPage } from './views/pages/EncryptionPage';
 import { EncodingPage } from './views/pages/EncodingPage';
+import { SteganographyPage } from './views/pages/SteganographyPage';
 import { Router } from './router/Router';
 
 function App() {
@@ -16,7 +17,8 @@ function App() {
           { path: '/', element: EncryptionPage },
           { path: '/hashing', element: HashingPage },
           { path: '/encryption', element: EncryptionPage },
-          { path: '/encoding', element: EncodingPage }
+          { path: '/encoding', element: EncodingPage },
+          { path: '/steganography', element: SteganographyPage }
         ]}
       />
     </div>

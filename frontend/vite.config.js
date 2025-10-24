@@ -1,25 +1,37 @@
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
+import path from 'path'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
   plugins: [react()],
   server: {
     fs: {
       allow: ['..']
     }
   },
-  base: '/hashlab/',
-  build: {
-    rollupOptions: {
-      external: (id) => {
-        // Don't bundle WASM files, they should be loaded at runtime
-        return id.includes('pkg/rust_wasm')
-      }
+  // Use '/hashlab/' for GitHub Pages (production), '/' for local dev
+  base: mode === 'production' ? '/hashlab/' : '/',
+  resolve: {
+    alias: {
+      '@pkg': path.resolve(__dirname, '../pkg')
     }
   },
+  build: {
+    rollupOptions: {
+      output: {
+        assetFileNames: (assetInfo) => {
+          // Keep WASM files in a pkg directory structure
+          if (assetInfo.name && assetInfo.name.endsWith('.wasm')) {
+            return 'pkg/[name][extname]';
+          }
+          return 'assets/[name]-[hash][extname]';
+        }
+      }
+    },
+    copyPublicDir: true
+  },
   assetsInclude: ['**/*.wasm'],
-  define: {
-    // This ensures the base path is available at runtime
-    'import.meta.env.BASE_URL': JSON.stringify('/hashlab/')
+  optimizeDeps: {
+    exclude: ['@pkg/rust_wasm.js']
   }
-})
+}))

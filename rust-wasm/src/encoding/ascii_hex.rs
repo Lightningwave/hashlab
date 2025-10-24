@@ -1,4 +1,4 @@
-// ASCII <-> Hex converter (simple and explicit)
+// ASCII <-> Hex converter 
 
 pub fn ascii_to_hex(text: &str) -> String {
     let bytes = text.as_bytes();

@@ -14,7 +14,7 @@ export const useCrypto = () => {
 
   /**
    * Hash input using MD5
-   * @param {string} text - Optional text to hash (uses state if not provided)
+   * @param {string} text 
    */
   const hashMD5 = useCallback(async (text) => {
     const textToHash = text !== undefined ? text : input;

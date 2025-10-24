@@ -1,4 +1,3 @@
-// Very small and clear URL helpers
 pub fn encode(text: &str) -> String {
     urlencoding::encode(text).to_string()
 }

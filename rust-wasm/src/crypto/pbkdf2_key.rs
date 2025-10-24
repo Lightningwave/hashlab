@@ -1,5 +1,4 @@
 // PBKDF2 key derivation for AES keys
-// Simple implementation for learning purposes
 
 use pbkdf2::pbkdf2_hmac;
 use sha2::Sha256;

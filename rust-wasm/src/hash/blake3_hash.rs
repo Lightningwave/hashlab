@@ -1,7 +1,5 @@
 // BLAKE3 hashing - produces a 256-bit (32-byte) hash by default
-// BLAKE3 is much faster than BLAKE2 and can be used as both a hash function
-// and a key derivation function. It's designed to be highly parallelizable.
-// Note: Named blake3_hash to avoid conflict with the blake3 crate name
+
 
 pub fn hash(text: &str) -> String {
     // Create a new BLAKE3 hasher and hash the input

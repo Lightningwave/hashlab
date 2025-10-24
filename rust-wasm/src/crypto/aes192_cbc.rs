@@ -1,5 +1,4 @@
 // AES-192-CBC with PKCS7 padding
-// The code is written to be easy to read for beginners
 
 use aes::Aes192;
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
@@ -15,14 +14,13 @@ pub fn random_iv_16() -> [u8; 16] {
 }
 
 pub fn encrypt(plaintext: &str, key_text: &str, iv: &[u8; 16]) -> Vec<u8> {
-    let mut key = [0u8; 24]; // 192 bits = 24 bytes
+    let mut key = [0u8; 24]; 
     let kb = key_text.as_bytes();
     let n = kb.len().min(24);
     key[..n].copy_from_slice(&kb[..n]);
 
     let cipher = Aes192CbcEnc::new(&key.into(), iv.into());
     let mut buf = plaintext.as_bytes().to_vec();
-    // Allocate extra space for padding (one block is enough)
     buf.resize(buf.len() + 16, 0u8);
     let len = plaintext.as_bytes().len();
     let out = cipher.encrypt_padded_mut::<Pkcs7>(&mut buf, len).expect("encrypt failed");
@@ -42,7 +40,7 @@ pub fn encrypt_auto_iv(plaintext: &str, key_text: &str) -> Vec<u8> {
 }
 
 pub fn decrypt(ciphertext: &[u8], key_text: &str, iv: &[u8; 16]) -> Result<String, String> {
-    let mut key = [0u8; 24]; // 192 bits = 24 bytes
+    let mut key = [0u8; 24]; 
     let kb = key_text.as_bytes();
     let n = kb.len().min(24);
     key[..n].copy_from_slice(&kb[..n]);

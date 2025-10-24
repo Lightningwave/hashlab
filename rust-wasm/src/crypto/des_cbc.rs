@@ -1,4 +1,4 @@
-// DES-CBC with PKCS7 padding (separate file from 3DES)
+// DES-CBC with PKCS7 padding 
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 use des::Des;
 use getrandom::getrandom;

@@ -1,6 +1,5 @@
 // DES-ECB with PKCS7 padding
-// ECB mode encrypts each block independently - no IV needed
-// We simulate ECB by using CBC with a zero IV (less secure but works for educational purposes)
+
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 use des::Des;
 

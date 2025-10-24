@@ -1,5 +1,4 @@
 // AES-128-CBC with PKCS7 padding
-// The code is written to be easy to read for beginners
 
 use aes::Aes128;
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
@@ -22,7 +21,6 @@ pub fn encrypt(plaintext: &str, key_text: &str, iv: &[u8; 16]) -> Vec<u8> {
 
     let cipher = Aes128CbcEnc::new(&key.into(), iv.into());
     let mut buf = plaintext.as_bytes().to_vec();
-    // Allocate extra space for padding (one block is enough)
     buf.resize(buf.len() + 16, 0u8);
     let len = plaintext.as_bytes().len();
     let out = cipher.encrypt_padded_mut::<Pkcs7>(&mut buf, len).expect("encrypt failed");

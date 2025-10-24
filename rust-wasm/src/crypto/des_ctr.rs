@@ -1,4 +1,4 @@
-// DES-CTR (Counter mode) - manual implementation to avoid type system issues
+// DES-CTR (Counter mode) 
 use des::Des;
 use des::cipher::{BlockEncrypt, KeyInit};
 use getrandom::getrandom;
@@ -10,7 +10,6 @@ pub fn random_nonce_8() -> [u8; 8] {
     nonce
 }
 
-// Manual CTR implementation for DES
 // CTR mode works by encrypting a counter and XORing with plaintext
 fn ctr_process(data: &[u8], key_bytes: &[u8; 8], nonce: &[u8; 8]) -> Vec<u8> {
     let cipher = Des::new(key_bytes.into());

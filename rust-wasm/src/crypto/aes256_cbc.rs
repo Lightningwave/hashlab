@@ -1,5 +1,4 @@
 // AES-256-CBC with PKCS7 padding
-// The code is written to be easy to read for beginners
 
 use aes::Aes256;
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};

@@ -1,4 +1,3 @@
-// Very small and clear Hex helpers
 pub fn encode(text: &str) -> String {
     hex::encode(text.as_bytes())
 }

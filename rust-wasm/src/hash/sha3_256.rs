@@ -1,5 +1,4 @@
 // SHA3-256 hashing - produces a 256-bit (32-byte) hash using the Keccak algorithm
-// SHA-3 is the latest member of the Secure Hash Algorithm family, standardized by NIST in 2015
 use sha3::{Sha3_256, Digest};
 
 pub fn hash(text: &str) -> String {

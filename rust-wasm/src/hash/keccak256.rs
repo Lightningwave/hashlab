@@ -1,7 +1,5 @@
 // Keccak-256 hashing - produces a 256-bit (32-byte) hash using the original Keccak algorithm
-// Note: Keccak-256 is different from SHA3-256. Keccak-256 is the original algorithm
-// that was submitted to NIST, while SHA3-256 has slightly different padding.
-// Keccak-256 is commonly used in Ethereum and other blockchains.
+
 use sha3::{Keccak256, Digest};
 
 pub fn hash(text: &str) -> String {

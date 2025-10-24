@@ -27,6 +27,13 @@ All encryption uses PBKDF2 key derivation with automatic IV/nonce handling.
 - **URL** encode/decode
 - **ASCII ↔ Hex** converter
 
+###  Steganography
+- **Image Steganography** - Hide encrypted messages in PNG images
+- **LSB Technique** - Uses Least Significant Bit steganography
+- **AES-256-GCM Encryption** - Messages encrypted before hiding
+- **Drag & Drop Interface** 
+- **Invisible Modifications** - Output looks identical to original
+
 ## Tech Stack
 
 - **Frontend**: React + Vite
@@ -49,7 +56,8 @@ hashlab/
 │   ├── src/
 │   │   ├── crypto/        # Encryption algorithms
 │   │   ├── hash/          # Hashing algorithms
-│   │   └── encoding/      # Encoding/decoding
+│   │   ├── encoding/      # Encoding/decoding
+│   │   └── steganography/ # Image steganography
 │   └── Cargo.toml
 │
 └── pkg/                    # Compiled WASM output
@@ -119,6 +127,31 @@ hashlab/
 
 **Everything is automatic** - user only needs to remember their passphrase!
 
+### Steganography Example (Image Hiding)
+
+**Encoding:**
+```
+1. User uploads PNG image + enters message + passphrase
+2. Generate random salt (16 bytes)
+3. Derive key using PBKDF2-HMAC-SHA256 (100,000 iterations)
+4. Encrypt message with AES-256-GCM
+5. Combine: [salt | encrypted_data]
+6. Hide in image using LSB steganography
+7. Download modified PNG (looks identical!)
+```
+
+**Decoding:**
+```
+1. User uploads stego image + enters passphrase
+2. Extract hidden data using LSB steganography
+3. Extract salt from beginning of hidden data
+4. Derive key using PBKDF2 with extracted salt
+5. Decrypt with AES-256-GCM
+6. Display original message
+```
+
+**Security**: Even if steganography is detected, the message is still encrypted!
+
 ## Security Notes
 
 ⚠️ **Educational Purpose**: This project is designed for learning cryptography concepts. While it uses standard algorithms correctly:
@@ -172,7 +205,7 @@ MIT License - see LICENSE file for details
 
 ## Acknowledgments
 
-- Built with Rust crates: `aes`, `sha2`, `sha3`, `blake2`, `blake3`, `des`, `chacha20`, `pbkdf2`
+- Built with Rust crates: `aes`, `sha2`, `sha3`, `blake2`, `blake3`, `des`, `chacha20`, `pbkdf2`, `aes-gcm`, `image`
 - Inspired by tools like CyberChef and Online Hash Tools
 - Created for educational purposes to learn cryptography and Rust/WASM
 

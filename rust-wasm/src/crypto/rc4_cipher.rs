@@ -1,5 +1,4 @@
-// RC4 stream cipher (deprecated - for educational purposes only)
-// WARNING: RC4 is insecure and should not be used in production
+// RC4 stream cipher 
 
 use rc4::{Rc4, KeyInit, StreamCipher};
 use rc4::consts::U16;

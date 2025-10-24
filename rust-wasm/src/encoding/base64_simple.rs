@@ -1,4 +1,3 @@
-// Very small and clear Base64 helpers
 use base64::Engine;
 pub fn encode(text: &str) -> String {
     base64::engine::general_purpose::STANDARD.encode(text.as_bytes())

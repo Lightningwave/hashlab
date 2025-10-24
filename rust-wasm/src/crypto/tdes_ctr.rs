@@ -1,4 +1,4 @@
-// Triple DES CTR (Counter mode) - manual implementation to avoid type system issues
+// Triple DES CTR (Counter mode) 
 use des::{TdesEde2, TdesEde3};
 use des::cipher::{BlockEncrypt, KeyInit};
 use getrandom::getrandom;

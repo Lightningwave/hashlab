@@ -1,5 +1,4 @@
 // AES-256-ECB with PKCS7 padding - 256-bit key
-// ECB mode encrypts each block independently (not recommended for most use cases)
 use aes::Aes256;
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyInit};
 

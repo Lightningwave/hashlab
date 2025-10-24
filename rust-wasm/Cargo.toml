@@ -28,6 +28,9 @@ chacha20 = "0.9"
 getrandom = { version = "0.2", features = ["js"] }
 # Key derivation
 pbkdf2 = "0.12"
+# Image processing and steganography
+image = { version = "0.24", default-features = false, features = ["png"] }
+aes-gcm = "0.10"
 
 [profile.release]
 opt-level = "z"

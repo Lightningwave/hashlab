@@ -1,7 +1,5 @@
 // BLAKE2b hashing - produces a 512-bit (64-byte) hash
-// BLAKE2 is a cryptographic hash function faster than MD5, SHA-1, SHA-2, and SHA-3,
-// yet is at least as secure as the latest standard SHA-3.
-// BLAKE2b is optimized for 64-bit platforms.
+
 use blake2::{Blake2b512, Digest};
 
 pub fn hash(text: &str) -> String {

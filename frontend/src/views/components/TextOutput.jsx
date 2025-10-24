@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 
 /**
- * TextOutput - Presentational component for displaying output with copy functionality
+ * TextOutput - Presentational component for displaying output 
  */
 export const TextOutput = ({ value, label = "Output" }) => {
   const [copied, setCopied] = useState(false);

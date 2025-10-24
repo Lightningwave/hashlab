@@ -1,5 +1,4 @@
-// ChaCha20 stream cipher (modern and secure)
-
+// ChaCha20 stream cipher 
 use chacha20::ChaCha20;
 use chacha20::cipher::{KeyIvInit, StreamCipher};
 use getrandom::getrandom;
@@ -91,11 +90,9 @@ mod tests {
         
         let combined = encrypt_auto_nonce(plaintext, key1);
         
-        // Decrypting with wrong key should give different result
         let wrong_decrypt = decrypt_auto_nonce(&combined, key2).unwrap();
         assert_ne!(wrong_decrypt, plaintext);
         
-        // Decrypting with correct key should work
         let correct_decrypt = decrypt_auto_nonce(&combined, key1).unwrap();
         assert_eq!(correct_decrypt, plaintext);
     }

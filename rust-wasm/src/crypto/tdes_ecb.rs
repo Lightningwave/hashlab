@@ -1,6 +1,5 @@
 // Triple DES (2-key or 3-key) in ECB mode with PKCS7
-// ECB mode encrypts each block independently - no IV needed
-// We simulate ECB by using CBC with a zero IV (less secure but works for educational purposes)
+
 use cbc::cipher::{block_padding::Pkcs7, BlockDecryptMut, BlockEncryptMut, KeyIvInit};
 use des::{TdesEde2, TdesEde3};
 

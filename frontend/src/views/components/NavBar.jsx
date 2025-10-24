@@ -13,7 +13,8 @@ export const NavBar = () => {
   const navItems = [
     { label: 'Encryption', href: '/encryption' },
     { label: 'Hashing', href: '/hashing' },
-    { label: 'Encoding', href: '/encoding' }
+    { label: 'Encoding', href: '/encoding' },
+    { label: 'Steganography', href: '/steganography' }
   ];
 
   return (

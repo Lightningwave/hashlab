@@ -2,10 +2,10 @@
 
 use wasm_bindgen::prelude::*;
 
-// Module declarations
 mod hash;
 mod crypto;
 mod encoding;
+mod steganography;
 
 // ============================================================================
 // HASH FUNCTIONS
@@ -60,7 +60,7 @@ pub fn hash_blake3(input: &str) -> String {
 }
 
 // ============================================================================
-// CRYPTO FUNCTIONS (Future)
+// CRYPTO FUNCTIONS 
 // ============================================================================
 
 #[wasm_bindgen]
@@ -442,4 +442,95 @@ pub fn chacha20_encrypt_auto_nonce(plaintext: &str, key: &str) -> Vec<u8> {
 #[wasm_bindgen]
 pub fn chacha20_decrypt_auto_nonce(combined: &[u8], key: &str) -> Result<String, JsValue> {
     crypto::chacha20_cipher::decrypt_auto_nonce(combined, key).map_err(|e| JsValue::from_str(&e))
+}
+
+// ============================================================================
+// STEGANOGRAPHY FUNCTIONS
+// ============================================================================
+
+/// Calculate the capacity of a PNG image for hiding data (in bytes)
+#[wasm_bindgen]
+pub fn steg_calculate_capacity(width: u32, height: u32) -> usize {
+    steganography::lsb_png::calculate_capacity(width, height)
+}
+
+/// Encode encrypted data into a PNG image
+/// Returns the modified PNG image as bytes
+#[wasm_bindgen]
+pub fn steg_encode_png(
+    image_data: &[u8],
+    message: &str,
+    passphrase: &str,
+) -> Result<Vec<u8>, JsValue> {
+    use image::ImageFormat;
+    use std::io::Cursor;
+    
+    // Load PNG image
+    let img = image::load_from_memory_with_format(image_data, ImageFormat::Png)
+        .map_err(|e| JsValue::from_str(&format!("Failed to load PNG: {}", e)))?;
+    
+    // Generate salt
+    let mut salt = [0u8; 16];
+    getrandom::getrandom(&mut salt)
+        .map_err(|e| JsValue::from_str(&format!("Failed to generate salt: {}", e)))?;
+    
+    // Derive encryption key
+    let key = steganography::aes_gcm_cipher::derive_key_from_passphrase(passphrase, &salt);
+    
+    // Encrypt the message
+    let encrypted = steganography::aes_gcm_cipher::encrypt(message.as_bytes(), &key)
+        .map_err(|e| JsValue::from_str(&format!("Encryption failed: {}", e)))?;
+    
+    // Combine salt + encrypted data
+    let mut data_to_hide = Vec::with_capacity(16 + encrypted.len());
+    data_to_hide.extend_from_slice(&salt);
+    data_to_hide.extend_from_slice(&encrypted);
+    
+    // Encode into image
+    let steg_img = steganography::lsb_png::encode(&img, &data_to_hide)
+        .map_err(|e| JsValue::from_str(&format!("Steganography encoding failed: {}", e)))?;
+    
+    // Convert back to PNG bytes
+    let mut output = Vec::new();
+    steg_img.write_to(&mut Cursor::new(&mut output), ImageFormat::Png)
+        .map_err(|e| JsValue::from_str(&format!("Failed to write PNG: {}", e)))?;
+    
+    Ok(output)
+}
+
+/// Decode and decrypt data from a PNG image
+/// Returns the hidden message
+#[wasm_bindgen]
+pub fn steg_decode_png(
+    image_data: &[u8],
+    passphrase: &str,
+) -> Result<String, JsValue> {
+    use image::ImageFormat;
+    
+    // Load PNG image
+    let img = image::load_from_memory_with_format(image_data, ImageFormat::Png)
+        .map_err(|e| JsValue::from_str(&format!("Failed to load PNG: {}", e)))?;
+    
+    // Extract hidden data
+    let hidden_data = steganography::lsb_png::decode(&img)
+        .map_err(|e| JsValue::from_str(&format!("Steganography decoding failed: {}", e)))?;
+    
+    if hidden_data.len() < 16 {
+        return Err(JsValue::from_str("Invalid hidden data: too short"));
+    }
+    
+    // Extract salt and encrypted data
+    let salt = &hidden_data[0..16];
+    let encrypted = &hidden_data[16..];
+    
+    // Derive decryption key
+    let key = steganography::aes_gcm_cipher::derive_key_from_passphrase(passphrase, salt);
+    
+    // Decrypt the message
+    let decrypted = steganography::aes_gcm_cipher::decrypt(encrypted, &key)
+        .map_err(|e| JsValue::from_str(&format!("Decryption failed: {}", e)))?;
+    
+    // Convert to string
+    String::from_utf8(decrypted)
+        .map_err(|e| JsValue::from_str(&format!("Invalid UTF-8: {}", e)))
 }
