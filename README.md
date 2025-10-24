@@ -1,5 +1,9 @@
 # HashLab
 
+<p align="center">
+  <img src="/frontend/public/images/hashlab-logo.png" alt="Hashlab Logo" width="300"/>
+</p>
+
 A client-side cryptographic toolkit built with React and Rust/WebAssembly. All operations run locally in your browser - no data ever leaves your device.
 
 ## Features
